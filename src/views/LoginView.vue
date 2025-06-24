@@ -8,14 +8,32 @@
 
       <!-- 로그인 폼 -->
       <div>
-        <LoginForm
-          v-model:username="loginData.id"
-          v-model:password="loginData.password"
-          :loading="loading"
-          @submit="handleLogin"
-        />
+        <form @submit.prevent="handleLogin">
+          <!-- 아이디 -->
+          <AuthForm
+            v-model="loginData.id"
+            type="text"
+            placeholder="아이디 입력"
+            autocomplete="username"
+            :loading="loading"
+            :auto-focus="true"
+            @enter="focusPassword"
+            ref="usernameRef"
+          />
 
-        <LoginButton :loading="loading" @click="handleLogin" />
+          <!-- 비밀번호 -->
+          <AuthForm
+            v-model="loginData.password"
+            type="password"
+            placeholder="비밀번호 입력"
+            autocomplete="current-password"
+            :loading="loading"
+            @enter="handleLogin"
+            ref="passwordRef"
+          />
+        </form>
+
+        <AuthButton text="로그인" :loading="loading" @click="handleLogin" />
 
         <!-- 하단 링크 -->
         <div class="mt-8 text-center">
@@ -29,7 +47,7 @@
             <span class="text-sm text-gray-300">|</span>
             <span
               class="cursor-pointer text-sm text-gray-600 transition-colors hover:text-blue-600"
-              @click="goToSignup"
+              @click="goToSignin"
             >
               회원가입
             </span>
@@ -64,8 +82,9 @@ import { useAuthStore } from '@/stores/auth';
 import { login } from '@/services/api/domains/user';
 import type { LoginRequest } from '@/services/api/domains/user/types';
 import { getUserDataFromToken } from '@/utils/auth';
-import LoginForm from '@/components/views/login/LoginForm.vue';
-import LoginButton from '@/components/views/login/LoginButton.vue';
+import { validateLoginForm } from '@/utils/validation';
+import AuthForm from '@/components/common/AuthForm.vue';
+import AuthButton from '@/components/common/AuthButton.vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -82,17 +101,28 @@ const loading = ref(false);
 const showError = ref(false);
 const errorMessage = ref('');
 
+// 폼 참조들
+const usernameRef = ref();
+const passwordRef = ref();
+
+// 포커스 이동
+const focusPassword = () => {
+  passwordRef.value?.focus();
+};
+
 // 로그인 처리
 const handleLogin = async () => {
-  if (!loginData.id || !loginData.password) {
-    showErrorToast('아이디와 비밀번호를 입력해주세요.');
+  const validation = validateLoginForm(loginData);
+
+  if (!validation.isValid) {
+    const firstError = Object.values(validation.errors)[0];
+    showErrorToast(firstError || '입력값을 확인해주세요.');
     return;
   }
 
   loading.value = true;
 
   try {
-    // 실제 로그인 API 호출
     const tokens = await login({
       id: loginData.id,
       password: loginData.password,
@@ -106,7 +136,7 @@ const handleLogin = async () => {
     const redirectPath = (route.query.redirect as string) || '/';
     router.push(redirectPath);
   } catch (error: unknown) {
-    console.log(error.message);
+    console.error('로그인 에러:', error);
     showErrorToast('로그인에 실패했습니다.');
   } finally {
     loading.value = false;
@@ -129,7 +159,7 @@ const goToFindAccount = () => {
   console.log('아이디/비밀번호 찾기');
 };
 
-const goToSignup = () => {
-  router.push('/signup');
+const goToSignin = () => {
+  router.push('/signin');
 };
 </script>
