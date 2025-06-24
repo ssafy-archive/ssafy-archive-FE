@@ -39,7 +39,7 @@ router.beforeEach((to, from, next) => {
   }
 
   // 로그인된 상태에서 로그인/회원가입 페이지 접근 시 홈으로 리다이렉트
-  if ((to.name === 'login' || to.name === 'signup') && authStore.getIsAuthenticated) {
+  if ((to.name === 'login' || to.name === 'signin') && authStore.getIsAuthenticated) {
     next({ name: 'home' });
     return;
   }
