@@ -20,7 +20,7 @@
       <div class="grid w-full grid-cols-1 place-items-center gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         <CreateGroupItem @click='handleCreateClick' />
         <GroupItem v-for="group in groups" :key="group.groupId" :title="group.groupName"
-          @cardClick="(groupId) => handleGroupClick(groupId)" />
+          @cardClick="(group) => handleGroupClick(group)" />
       </div>
     </div>
 
@@ -43,6 +43,7 @@ import { getMyGroups } from '@/services/api/domains/group/index';
 import { onMounted, ref } from 'vue';
 import type { Group } from '@/types/type';
 import { toast } from 'vue-sonner';
+import { useGroupStore } from '@/stores/group';
 
 // 그룹 데이터
 const groups = ref<Group[]>([]);
@@ -50,6 +51,7 @@ const groups = ref<Group[]>([]);
 // 모달 표시 상태
 const showCreateModal = ref(false);
 const showJoinModal = ref(false);
+const groupStore = useGroupStore();
 
 const fetchGroups = async () => {
   try {
@@ -102,8 +104,8 @@ const handleGroupJoined = () => {
   });
 };
 
-const handleGroupClick = (groupId: number) => {
+const handleGroupClick = (group: Group) => {
   // 그룹 클릭 시 처리 로직
-  console.log(`Group ${groupId} clicked`);
+  groupStore.setGroup(group.groupId, group.groupName, group.groupKey, group.groupRole);
 };
 </script>
