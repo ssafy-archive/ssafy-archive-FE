@@ -1,7 +1,9 @@
 export type User = {
-  id: number;
-  ssafyNumber: string;
+  userId: number;       
+  loginId: string;
   name: string;
+  ssafyNumber: string;
+  userRole: string;
 };
 
 export type AuthToken = {
