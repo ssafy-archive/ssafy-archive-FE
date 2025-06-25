@@ -26,3 +26,15 @@ export const createGroup = async (groupName: string): Promise<void> => {
     }
   );
 };
+
+export const joinGroup = async (groupKey: string): Promise<void> => {
+  await api.post(
+    GROUP.GROUP_REQUEST,
+    { groupKey },
+    {
+      headers: {
+        Authorization: token,
+      },
+    }
+  );
+};

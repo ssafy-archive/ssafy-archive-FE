@@ -14,3 +14,7 @@ export type GroupListResponse = {
 export type GroupCreateRequest = {
   groupName: string;
 };
+
+export type GroupJoinRequest = {
+  groupKey: string;
+};
