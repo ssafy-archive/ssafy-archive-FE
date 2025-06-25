@@ -10,3 +10,7 @@ export type GroupResponse = {
 export type GroupListResponse = {
   groupList: GroupResponse[];
 };
+
+export type GroupCreateRequest = {
+  groupName: string;
+};

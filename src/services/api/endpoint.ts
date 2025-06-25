@@ -10,4 +10,5 @@ export const USER = {
 
 export const GROUP = {
   GET_MY_GROUPS: '/group/myGroups',
-};
+  GROUP: '/group',
+} as const;
