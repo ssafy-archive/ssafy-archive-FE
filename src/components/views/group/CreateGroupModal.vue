@@ -35,6 +35,7 @@
 import { ref, computed, watch } from 'vue';
 import BaseModal from '@/components/modal/BaseModal.vue';
 import { createGroup } from '@/services/api/domains/group/index';
+import { toast } from 'vue-sonner';
 
 const props = defineProps({
   isOpen: {
@@ -103,6 +104,10 @@ const handleSubmit = async () => {
 
   } catch (error) {
     console.error('그룹 생성 실패:', error);
+    toast.error('그룹 생성 실패', {
+      description: '그룹 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+      duration: 3000,
+    });
   } finally {
     isLoading.value = false;
   }
