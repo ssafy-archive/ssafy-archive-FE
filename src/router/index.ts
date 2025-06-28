@@ -20,6 +20,13 @@ const router = createRouter({
       component: () => import('@/views/HomeView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/group',
+      name: 'group',
+      component: () => import('@/views/GroupView.vue'),
+      // 그룹 페이지는 인증이 필요
+      // meta: { requiresAuth: true },
+    },
   ],
 });
 
